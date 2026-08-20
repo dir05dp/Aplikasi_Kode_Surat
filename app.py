@@ -4,9 +4,8 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
 
 # Mengambil API Key dari brankas rahasia Streamlit Cloud
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
@@ -41,27 +40,34 @@ st.markdown("Ketikkan nama barang atau kegiatan. AI akan mencarikan kode klasifi
 db = load_or_create_database()
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
 
-prompt = ChatPromptTemplate.from_template("""
-Kamu adalah asisten arsiparis profesional di Kementerian PUPR. 
+# Prompt Klasik yang lebih stabil
+prompt_template = """Kamu adalah asisten arsiparis profesional di Kementerian PUPR. 
 Gunakan konteks berikut untuk mencari kode klasifikasi arsip yang ditanyakan.
-Sebutkan kodenya, nama klasifikasi, halaman berapa, dan alasan singkatnya. Jika tidak ada yang sama persis, berikan saran yang paling mendekati konsepnya.
+Sebutkan kodenya, nama klasifikasi, dan alasan singkatnya. Jika tidak ada yang sama persis, berikan saran yang paling mendekati konsepnya.
 
 Konteks PDF:
 {context}
 
-Pertanyaan Pengguna: {input}
+Pertanyaan Pengguna: {question}
 
-Jawaban:
-""")
+Jawaban:"""
 
-document_chain = create_stuff_documents_chain(llm, prompt)
-retriever = db.as_retriever(search_kwargs={"k": 3})
-retrieval_chain = create_retrieval_chain(retriever, document_chain)
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["context", "question"]
+)
+
+# Menggunakan rantai pencarian klasik (RetrievalQA) yang kebal error versi
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=db.as_retriever(search_kwargs={"k": 3}),
+    chain_type_kwargs={"prompt": PROMPT}
+)
 
 user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat kerja")
 
 if user_query:
     with st.spinner("Mencari di dalam dokumen klasifikasi..."):
-        response = retrieval_chain.invoke({"input": user_query})
+        response = qa_chain.invoke({"query": user_query})
         st.markdown("### Hasil Pencarian:")
-        st.write(response["answer"])
+        st.write(response["result"])

@@ -7,7 +7,6 @@ from google import genai
 api_key = st.secrets["GOOGLE_API_KEY"]
 client = genai.Client(api_key=api_key)
 
-# Pastikan nama file PDF sama persis dengan di GitHub
 PDF_FILE_PATH = "16_PRT_M_2018.pdf" 
 
 @st.cache_data
@@ -16,9 +15,11 @@ def ekstrak_semua_teks():
     reader = PdfReader(PDF_FILE_PATH)
     teks_lengkap = ""
     for i, halaman in enumerate(reader.pages):
-        nomor_halaman = i + 1 # Menghitung nomor halaman sesungguhnya
-        # Menyisipkan penanda halaman rahasia agar AI tahu posisi halamannya
-        teks_lengkap += f"\n\n--- [INFO UNTUK AI: TEKS DI BAWAH INI BERADA DI HALAMAN {nomor_halaman}] ---\n\n"
+        nomor_halaman = i + 1 
+        # Penanda halaman ini dibuat sangat MENCOLOK agar AI tidak kelewatan
+        teks_lengkap += f"\n\n======================================================\n"
+        teks_lengkap += f"--- [INFO UNTUK AI: TEKS DI BAWAH INI ADALAH HALAMAN {nomor_halaman}] ---\n"
+        teks_lengkap += f"======================================================\n\n"
         
         teks_ekstrak = halaman.extract_text()
         if teks_ekstrak:
@@ -32,25 +33,28 @@ st.set_page_config(page_title="Pencari Kode Arsip", page_icon="🗂️")
 st.title("🗂️ Asisten Klasifikasi Arsip PUPR")
 st.markdown("Ketikkan nama barang atau kegiatan. AI akan mencarikan kode klasifikasinya beserta halamannya dari dokumen Permen PUPR No 16/PRT/M/2018.")
 
-# 2. Tarik semua teks PDF beserta penanda halamannya
 teks_pdf = ekstrak_semua_teks()
 
-user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat kerja")
+user_query = st.text_input("Contoh pencarian: pengadaan semen, pelelangan aset, cuti sakit")
 
 if user_query:
     with st.spinner("AI sedang memindai ratusan halaman secara instan untuk Anda..."):
-        prompt = f"""Kamu adalah asisten arsiparis ahli di Kementerian PUPR. 
-        Tugasmu adalah menganalisis pertanyaan pengguna dan mencari kode klasifikasi arsip yang paling tepat berdasarkan SELURUH TEKS dokumen Permen PUPR No 16/PRT/M/2018 di bawah ini.
+        # Instruksi (Prompt) ini diperketat untuk menghindari halusinasi
+        prompt = f"""Kamu adalah asisten arsiparis ahli dan sangat teliti di Kementerian PUPR. 
+        Tugasmu mencari kode klasifikasi arsip berdasarkan SELURUH TEKS dokumen Permen PUPR No 16/PRT/M/2018. Teks ini merupakan hasil ekstraksi PDF, jadi tabel mungkin terbaca sebagai teks biasa yang terpisah-pisah.
 
-        IKUTI FORMAT, LOGIKA, DAN GAYA BAHASA PENJAWABAN BERIKUT SECARA KETAT:
-        1. Analisis Awal: Jika kata kunci spesifik tidak disebutkan secara eksplisit di dalam klasifikasi, nyatakan hal tersebut di paragraf pertama. Kemudian, kelompokkan kata tersebut secara konseptual.
-        2. Opsi Berdasarkan Konteks: Berikan beberapa pilihan kode klasifikasi yang bergantung pada TUJUAN atau KONTEKS surat/permintaan tersebut.
-        3. Struktur Angka: Gunakan penomoran (1, 2, 3) untuk membedakan setiap konteks tersebut.
-        4. Struktur Bullet Point: Gunakan bullet point di bawah setiap nomor urut untuk menyebutkan kodenya.
-        5. Format Teks Wajib & Halaman: Kode dan nama klasifikasi HARUS ditebalkan (bold). Di akhir penjelasan pada bullet point tersebut, kamu WAJIB menyebutkan di halaman berapa kode tersebut ditemukan secara akurat.
-        Contoh penulisan: **[KODE] ([Nama Klasifikasi])**: [Penjelasan detail]. *(Ditemukan di Halaman X)*.
+        ATURAN WAJIB (HARUS DITAATI, JANGAN DILANGGAR):
+        1. JANGAN MENGARANG KODE ATAU HALAMAN. Ini adalah dokumen hukum.
+        2. CARI SECARA MENDALAM & GUNAKAN SINONIM: Jika pengguna mencari "pelelangan aset", kamu WAJIB mencari kata terkait seperti "lelang", "pemindahtanganan", "penghapusan", "Barang Milik Negara", "BMN" (Contoh: periksa kelompok kode PS atau Pengelolaan Barang Milik Negara seperti PS.05.01). Jangan mudah menyerah!
+        3. NOMOR HALAMAN HARUS AKURAT: Cari penanda `--- [INFO UNTUK AI: TEKS DI BAWAH INI ADALAH HALAMAN X] ---` yang PALING DEKAT DI ATAS teks yang kamu temukan. Gunakan angka X tersebut. (Ingat, klasifikasi arsip biasanya baru dimulai di atas halaman 25, jadi mustahil kodenya ada di halaman 10 atau 12).
+        
+        FORMAT JAWABAN:
+        1. Analisis Awal: Jelaskan hasil pencarianmu (termasuk sinonim yang kamu gunakan jika kata aslinya tidak ada).
+        2. Berikan pilihan berdasarkan konteks, gunakan nomor (1, 2, 3).
+        3. Gunakan bullet point di bawah angka.
+        4. Wajib gunakan format: **[KODE] ([Nama Klasifikasi])**: [Penjelasan]. *(Ditemukan persis di Halaman X)*.
 
-        TEKS DOKUMEN (Terdapat penanda halaman di dalamnya):
+        TEKS DOKUMEN:
         {teks_pdf}
 
         PERTANYAAN PENGGUNA: {user_query}

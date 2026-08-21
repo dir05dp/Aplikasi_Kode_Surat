@@ -29,7 +29,7 @@ st.markdown("Ketikkan perihal surat/kegiatan. AI akan mencarikan kode klasifikas
 teks_pdf = ekstrak_semua_teks()
 
 # 2. Siapkan Otak Gemini 1.5 Flash
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0)
 
 user_query = st.text_input("Silahkan perihal surat/kegiatan")
 

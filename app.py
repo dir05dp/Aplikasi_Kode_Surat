@@ -1,11 +1,11 @@
 import streamlit as st
 import os
 from pypdf import PdfReader
-import google.generativeai as genai
+from google import genai
 
-# 1. Mengambil API Key dari brankas rahasia Streamlit Cloud
+# 1. Mengambil API Key dan menyiapkan Client GenAI terbaru
 api_key = st.secrets["GOOGLE_API_KEY"]
-genai.configure(api_key=api_key)
+client = genai.Client(api_key=api_key)
 
 # Pastikan nama file PDF sama persis dengan di GitHub
 PDF_FILE_PATH = "16_PRT_M_2018.pdf" 
@@ -28,9 +28,6 @@ st.markdown("Ketikkan nama barang atau kegiatan. AI akan mencarikan kode klasifi
 # 2. Tarik semua teks PDF
 teks_pdf = ekstrak_semua_teks()
 
-# 3. Siapkan Otak Gemini Asli (Tanpa Perantara LangChain)
-model = genai.GenerativeModel('gemini-1.5-flash')
-
 user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat kerja")
 
 if user_query:
@@ -46,11 +43,13 @@ if user_query:
 
         JAWABAN:"""
         
-        # 4. Minta Gemini menjawab
+        # 3. Minta Gemini menjawab menggunakan format SDK terbaru
         try:
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model='gemini-1.5-flash',
+                contents=prompt
+            )
             st.markdown("### Hasil Pencarian:")
             st.write(response.text)
         except Exception as e:
             st.error(f"Terjadi kesalahan: {e}")
-            st.info("Saran: Pastikan API Key yang Anda masukkan di menu 'Secrets' Streamlit sudah benar dan tidak ada spasi yang tertinggal.")

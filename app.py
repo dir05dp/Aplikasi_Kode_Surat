@@ -32,7 +32,7 @@ user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat
 
 if user_query:
     with st.spinner("AI sedang memindai ratusan halaman secara instan untuk Anda..."):
-        prompt = f"""temukan kode klarifikasi arsip didalam dokumen Permen PUPR No 16/PRT/M/2018 itu yang berhubungan dengan yang ditanyakan.
+        prompt = f"""temukan kode klarifikasi arsip didalam dokumen Permen PUPR No 16/PRT/M/2018 pada halaman 26 sampai 103 itu yang berhubungan dengan yang ditanyakan.
         Sebutkan kodenya, nama klasifikasi. Jika tidak ada yang sama persis, berikan kode klarifikasi yang paling mendekati dengan yang ditanyakan.
 
         TEKS DOKUMEN:

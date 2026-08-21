@@ -14,7 +14,7 @@ PDF_FILE_PATH = "16_PRT_M_2018.pdf"
 
 @st.cache_resource
 def load_or_create_database():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     
     if os.path.exists(DB_FAISS_PATH):
         db = FAISS.load_local(DB_FAISS_PATH, embeddings, allow_dangerous_deserialization=True)

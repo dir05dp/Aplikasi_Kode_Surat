@@ -43,13 +43,12 @@ if user_query:
 
         JAWABAN:"""
         
-        # 3. Minta Gemini menjawab menggunakan format SDK terbaru
+        # 3. Minta Gemini menjawab menggunakan versi 3.6 Flash
         try:
             response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=prompt
-        )
-            
+                model='gemini-3.6-flash',
+                contents=prompt
+            )
             st.markdown("### Hasil Pencarian:")
             st.write(response.text)
         except Exception as e:

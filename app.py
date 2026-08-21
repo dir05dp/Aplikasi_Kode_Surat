@@ -22,8 +22,8 @@ def ekstrak_semua_teks():
 
 # --- TAMPILAN WEB ---
 st.set_page_config(page_title="Pencari Kode Arsip", page_icon="🗂️")
-st.title("🗂️ Asisten Klasifikasi Arsip PUPR")
-st.markdown("Ketikkan nama barang atau kegiatan. AI akan mencarikan kode klasifikasinya dari dokumen Permen PUPR No 16/PRT/M/2018.")
+st.title("🗂️ Aplikasi Asisten Membantu Mencari Kode Klasifikasi Surat")
+st.markdown("Ketikkan perihal surat/kegiatan. AI akan mencarikan kode klasifikasinya dari dokumen Permen PUPR No 16/PRT/M/2018.")
 
 # 1. Tarik semua teks PDF
 teks_pdf = ekstrak_semua_teks()
@@ -31,10 +31,10 @@ teks_pdf = ekstrak_semua_teks()
 # 2. Siapkan Otak Gemini 1.5 Flash
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
 
-user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat kerja")
+user_query = st.text_input("Silahkan perihal surat/kegiatan")
 
 if user_query:
-    with st.spinner("AI sedang memindai ratusan halaman secara instan untuk Anda..."):
+    with st.spinner("AI sedang memindai Permen No 16/PRT/M/2018 untuk Anda..."):
         # 3. Masukkan seluruh teks PDF dan pertanyaan ke dalam satu instruksi
         prompt = f"""Kamu adalah asisten arsiparis profesional di Kementerian PUPR. 
         Gunakan SELURUH TEKS dokumen Permen PUPR No 16/PRT/M/2018 di bawah ini untuk mencari kode klasifikasi arsip yang ditanyakan.

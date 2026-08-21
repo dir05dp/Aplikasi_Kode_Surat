@@ -40,8 +40,8 @@ if user_query:
         2. Opsi Berdasarkan Konteks: Berikan beberapa pilihan kode klasifikasi yang bergantung pada TUJUAN atau KONTEKS surat/permintaan tersebut (misal: Jika terkait pengadaan, Jika terkait data, Jika terkait pembinaan).
         3. Struktur Angka: Gunakan penomoran (1, 2, 3) untuk membedakan setiap konteks tersebut.
         4. Struktur Bullet Point: Gunakan bullet point di bawah setiap nomor urut untuk menyebutkan kodenya.
-        5. Format Teks Wajib: Kode dan nama klasifikasi HARUS ditebalkan (bold) dengan format berikut: **[KODE] ([Nama Klasifikasi])**: [Penjelasan detail atau deskripsi kegunaan berdasarkan teks dokumen PDF].
-        6. Sebutkan halamannya.
+        5. Format Teks Wajib: Kode dan nama klasifikasi HARUS ditebalkan (bold) dengan format berikut: **[KODE] ([Nama Klasifikasi])**: [Penjelasan detail atau deskripsi kegunaan berdasarkan teks dokumen PDF & halamannya].
+        
         TEKS DOKUMEN:
         {teks_pdf}
 

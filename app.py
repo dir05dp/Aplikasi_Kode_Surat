@@ -41,7 +41,7 @@ if user_query:
         3. Struktur Angka: Gunakan penomoran (1, 2, 3) untuk membedakan setiap konteks tersebut.
         4. Struktur Bullet Point: Gunakan bullet point di bawah setiap nomor urut untuk menyebutkan kodenya.
         5. Format Teks Wajib: Kode dan nama klasifikasi HARUS ditebalkan (bold) dengan format berikut: **[KODE] ([Nama Klasifikasi])**: [Penjelasan detail atau deskripsi kegunaan berdasarkan teks dokumen PDF].
-
+        6. Sebutkan halamannya.
         TEKS DOKUMEN:
         {teks_pdf}
 

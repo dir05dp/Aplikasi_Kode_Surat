@@ -46,8 +46,9 @@ if user_query:
         # 3. Minta Gemini menjawab menggunakan format SDK terbaru
         try:
             response = client.models.generate_content(
-                model='gemini-1.5-flash',
-                contents=prompt
+            model='gemini-2.0-flash',
+            contents=prompt
+        )
             )
             st.markdown("### Hasil Pencarian:")
             st.write(response.text)

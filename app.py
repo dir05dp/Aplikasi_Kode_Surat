@@ -49,7 +49,7 @@ if user_query:
             model='gemini-2.0-flash',
             contents=prompt
         )
-            )
+            
             st.markdown("### Hasil Pencarian:")
             st.write(response.text)
         except Exception as e:

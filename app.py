@@ -32,8 +32,15 @@ user_query = st.text_input("Contoh pencarian: pengadaan semen, cuti sakit, rapat
 
 if user_query:
     with st.spinner("AI sedang memindai ratusan halaman secara instan untuk Anda..."):
-        prompt = f"""temukan kode klarifikasi arsip didalam dokumen Permen PUPR No 16/PRT/M/2018 pada halaman 26 sampai 103 itu yang berhubungan dengan yang ditanyakan.
-        Sebutkan kodenya, nama klasifikasi. Jika tidak ada yang sama persis, berikan kode klarifikasi yang paling mendekati dengan yang ditanyakan.
+        prompt = f"""Kamu adalah asisten arsiparis ahli di Kementerian PUPR. 
+        Tugasmu adalah menganalisis pertanyaan pengguna dan mencari kode klasifikasi arsip yang paling tepat berdasarkan SELURUH TEKS dokumen Permen PUPR No 16/PRT/M/2018 di bawah ini.
+
+        IKUTI FORMAT, LOGIKA, DAN GAYA BAHASA PENJAWABAN BERIKUT SECARA KETAT:
+        1. Analisis Awal: Jika kata kunci spesifik (misalnya "aspal", "semen", "besi") tidak disebutkan secara eksplisit di dalam klasifikasi, nyatakan hal tersebut di paragraf pertama. Kemudian, kelompokkan kata tersebut secara konseptual (misal: "Namun, komponen tersebut secara konseptual termasuk dalam kategori Material Konstruksi atau Barang").
+        2. Opsi Berdasarkan Konteks: Berikan beberapa pilihan kode klasifikasi yang bergantung pada TUJUAN atau KONTEKS surat/permintaan tersebut (misal: Jika terkait pengadaan, Jika terkait data, Jika terkait pembinaan).
+        3. Struktur Angka: Gunakan penomoran (1, 2, 3) untuk membedakan setiap konteks tersebut.
+        4. Struktur Bullet Point: Gunakan bullet point di bawah setiap nomor urut untuk menyebutkan kodenya.
+        5. Format Teks Wajib: Kode dan nama klasifikasi HARUS ditebalkan (bold) dengan format berikut: **[KODE] ([Nama Klasifikasi])**: [Penjelasan detail atau deskripsi kegunaan berdasarkan teks dokumen PDF].
 
         TEKS DOKUMEN:
         {teks_pdf}
@@ -42,7 +49,6 @@ if user_query:
 
         JAWABAN:"""
         
-        # 3. Minta Gemini menjawab menggunakan versi 3.6 Flash
         try:
             response = client.models.generate_content(
                 model='gemini-3.6-flash',
